@@ -1,0 +1,103 @@
+---
+title: "RProject"
+format: pdf
+editor: visual
+---
+
+**Achraf Jlassi IGL3**
+
+**Source :** <https://www.kaggle.com/datasets/prasad22/global-economy-indicators>
+
+Le jeu de données est compilé à partir de la Base de données principales agrégées des comptes nationaux qui présente une série de tableaux analytiques des comptes nationaux à partir de 1970 pour plus de 200 pays et régions du monde. Il est le produit d'un effort de coopération mondiale entre la Branche des statistiques économiques de la Division de statistique des Nations Unies, les agences statistiques internationales, et les services statistiques nationaux de ces pays, et est développé conformément à la recommandation de la Commission de statistique lors de sa première session en 1947 que la Division de statistique devrait publier régulièrement les données les plus récentes disponibles sur les comptes nationaux pour autant de pays et régions que possible.
+
+## top 5 counrties by gdp in 2020
+
+```{r}
+data_2020 <- data[data$Year == 2020,]
+top_countries <- data_2020 %>%
+  arrange(desc(Gross_Domestic_Product_GDP)) %>%
+  head(5)
+ggplot(top_countries, aes(x=reorder(Country, -Gross_Domestic_Product_GDP), y=Gross_Domestic_Product_GDP)) +
+  geom_bar(stat="identity", fill="steelblue") +
+  coord_flip() +
+  labs(title="Top 5 Countries by GDP in 2020",
+       x="Country",
+       y="Gross Domestic Product (GDP)") +
+  theme_minimal()
+```
+
+Dans cette analyse économique, chaque pays est représenté comme un athlète sur un podium olympique, où la performance économique est symbolisée par la hauteur du saut. Les États-Unis se positionnent en tête avec un PIB impressionnant qui approche des niveaux exceptionnels. La Chine suit avec une performance notable, mais en deçà de celle des États-Unis. Le Japon, l'Allemagne et le Royaume-Uni complètent le tableau avec des performances économiques solides, bien que plus modérées. Ce graphique illustre de manière éloquente la dynamique de la course économique mondiale, où chaque barre représente la puissance économique d'un pays ainsi que ses ambitions et son impact sur la scène économique internationale.
+
+## country by population
+
+```{r}
+install.packages("plotly")
+library(plotly)
+plot_ly(data = data, x = ~Country, y = ~Population, type = 'bar') %>%
+  layout(title = "Population by Country",
+         xaxis = list(title = "Country"),
+         yaxis = list(title = "Population"))
+
+```
+
+Dans ce graphique, l'Inde se positionne en tête en termes de population, suivie par les Comores et l'Ouzbékistan. Les autres pays se situent en dessous de ces trois premiers, illustrant la répartition démographique mondiale. Ce graphique met en évidence la diversité et la variabilité de la population par pays, reflétant les dynamiques démographiques à l'échelle mondiale et mettant en lumière les pays avec les populations les plus importantes en comparaison avec les autres nations.
+
+## agricutlture by population
+
+```{r}
+plot_ly(data = data, x = ~Country, y = ~Agriculture, type = 'bar') %>%
+  layout(title = "Agriculture by Country",
+         xaxis = list(title = "Country"),
+         yaxis = list(title = "Value"))
+
+
+```
+
+Le graphique révèle que les Comores ont la plus forte proportion de population active dans l'agriculture par habitant, avec plus de 10 fois la proportion de l'Inde, suivies par l'Ouzbékistan. Ces données surprenantes mettent en évidence l'importance relative de l'agriculture dans les nations plus petites, surpassant des pays plus grands comme l'Inde, indiquant une dépendance économique particulière à l'agriculture dans ces pays.
+
+## country by inventories by country
+
+```{r}
+plot_ly(data = data, x = ~Country, y = ~Changes_in_inventories, type = 'box') %>%
+  layout(title = "Changes in Inventories by Country",
+         xaxis = list(title = "Country"),
+         yaxis = list(title = "Changes in Inventories"))
+
+
+```
+
+Le graphique présente les inventaires par pays, montrant une accumulation notable aux Comores, suivie par l'Ouzbékistan. Ces données suggèrent un investissement significatif dans les réserves ou la gestion des stocks dans ces nations, reflétant peut-être une planification stratégique ou des politiques économiques spécifiques aux besoins de chaque pays.
+
+## total value added by country
+
+```{r}
+plot_ly(data = data, x = ~Country, y = ~Total_Value_Added, type = 'bar') %>%
+  layout(title = "Total Value Added by Country",
+         xaxis = list(title = "Country"),
+         yaxis = list(title = "Total Value Added"))
+
+```
+
+Le graphique indique que l'Ouzbékistan, les Comores et le Kazakhstan se distinguent en tête en termes de valeur ajoutée totale, tous les autres pays étant en retrait. Ce schéma souligne les contributions économiques prédominantes de ces trois nations, suggérant leur impact substantiel sur le paysage mondial de la valeur ajoutée comparativement aux autres pays.
+
+## Linear Regresssion of Total_Value_Added on population
+
+```{r}
+# Load required library
+library(ggplot2)
+	model_population <- lm(Total_Value_Added ~ Population, data = data)
+# Scatter plot with regression line
+ggplot(data, aes(x = Population, y = Total_Value_Added)) +
+  geom_point(alpha = 0.7) +  # Add transparent points
+  geom_smooth(method = "lm", color = "blue", se = FALSE) +  # Add regression line without confidence interval
+  labs(title = "Linear Regression of Total_Value_Added on Population",
+       x = "Population",
+       y = "Total_Value_Added")
+
+```
+
+L’image représente un graphique de régression linéaire qui explore la relation entre deux variables : la population et la valeur ajoutée totale. Sur l’axe des x, nous avons la population, et sur l’axe des y, nous avons la valeur ajoutée totale. Chaque point noir sur le graphique représente une observation de données spécifique.
+
+La ligne bleue qui traverse le graphique en diagonale est la ligne de tendance ou de régression linéaire. Cette ligne est une tentative de modéliser la relation entre la population et la valeur ajoutée totale. Elle indique que, en général, à mesure que la population augmente, la valeur ajoutée totale augmente également. C’est ce que nous appelons une relation positive.
+
+En somme, ce graphique indiquer une relation positive entre la population et la valeur ajoutée totale.
